@@ -25,7 +25,7 @@ link_directories(/usr/local/lib)
 
 include_directories(example)
 
-add_executable(${PROJECT_NAME} "main.cpp")
+add_executable(${PROJECT_NAME} "example/main.cpp")
 
 set(WAPPER_LOGGER_DEPENDS log4cxx)
 

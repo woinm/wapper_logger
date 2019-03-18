@@ -23,7 +23,7 @@ link_directories(/usr/lib)
 link_directories(/usr/lib64)
 link_directories(/usr/local/lib)
 
-include_directories(example)
+include_directories(extend_hpp)
 
 add_executable(${PROJECT_NAME} "example/main.cpp")
 

@@ -26,11 +26,14 @@ bool load_logger_config(const std::string &file_path)
     return true;
 }
 
-class Wapper2Cout : public LoggerBase
+/**
+ * @brief The Wapper2Cout class 日志输出到C++标准输出流
+ */
+class Wapper2OoutStream : public LoggerBase
 {
 public:
-    Wapper2Cout(ELogLevel loglevel = ELogLevel::EN_DEBUG): LoggerBase(loglevel){}
-    ~Wapper2Cout(){}
+    Wapper2OoutStream(ELogLevel loglevel = ELogLevel::EN_DEBUG): LoggerBase(loglevel){}
+    ~Wapper2OoutStream(){}
 
 public:
     /**
@@ -42,28 +45,26 @@ public:
     {
         const static char *LEVEL_STR[] =
         {
-            "[Trace]  ", "[Debug]  ", "[Info]   ", "[Warning]", "[Error]  ", "[Fatal]  "
+            "[Trace]    ", "[Debug] ", "[Info]  ", "[Warning]", "[Error]    ", "[Fatal] "
         };
 
         std::cout << LEVEL_STR[out_lev] << "\t" << message << std::endl;
     }
-
 };
-typedef std::shared_ptr<Wapper2Cout> Wapper2CoutPtr;
+typedef std::shared_ptr<Wapper2OoutStream> Wapper2CoutPtr;
 
 int main()
 {
-    Wapper2Cout log2outstream;
-    log2outstream.debug() << "Hello World!";
-    LoggerBasePtr base_loger = std::make_shared<Wapper2Cout>(ELogLevel::EN_INFO);
-    std::cout << "<=========ptr========>" << std::endl;
-    base_loger->debug() << "Hello World!";
-    base_loger->info() << "Hello World!";
-    base_loger->error() << "Hello World!";
+    std::cout << "========= Out to std cout <=========" << std::endl;
+    LoggerBasePtr base_loger = std::make_shared<Wapper2OoutStream>(ELogLevel::EN_INFO);
+    base_loger->trace()  << "Hello World!";
+    base_loger->debug()  << "Hello World!";
+    base_loger->info()   << "Hello World!";
+    base_loger->warning()<< "Hello World!";
+    base_loger->error()  << "Hello World!";
 
-    cout << "Hello World!" << endl;
-
-    //
+    cout << "\n" << std::endl;
+    cout << "===========> Log4cxx loger <===========" << endl;
     if (!load_logger_config("config/log4cxx.conf"))
     {
         std::cout << "load logger config failed!" << std::endl;
@@ -71,15 +72,13 @@ int main()
     }
 
     log4cxx::LoggerPtr log4 = log4cxx::Logger::getLogger("client");
-
-
-    LoggerBasePtr logger = std::make_shared<CWapperLog4cxx>(ELogLevel::EN_INFO, log4);
-    logger->trace()   << "trace ==> hello world";
-    logger->debug()   << "debug ==> hello world";
-    logger->info()    << "info  ==> hello world";
-    logger->warning() << "warning ==> hello world";
-    logger->error()   << "error ==> hello world";
-    logger->fatal()   << "fatal ==> hello world";
+    LoggerBasePtr log4cxx_logger = std::make_shared<CWapperLog4cxx>(ELogLevel::EN_INFO, log4);
+    log4cxx_logger->trace()   << "hello world!";
+    log4cxx_logger->debug()   << "hello world!";
+    log4cxx_logger->info()    << "hello world!";
+    log4cxx_logger->warning() << "hello world!";
+    log4cxx_logger->error()   << "hello world!";
+    log4cxx_logger->fatal()   << "hello world!";
 
     return 0;
 }

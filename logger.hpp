@@ -62,7 +62,10 @@ class LoggerBase
         ~Logstream()
         {
             // 析构时将拼接完成的日志流输出给真正的日志对象
-            this->m_logger.log(m_level, this->str());
+            if (m_logger.level() <= m_level)
+            {
+                m_logger.log(m_level, this->str());
+            }
         }
 
     private:

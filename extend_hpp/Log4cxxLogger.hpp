@@ -86,7 +86,7 @@ public:
     virtual void log(ELogLevel lev, const std::string &message)
     {
         LOG_LEVEL_CHECK(lev)
-        if (m_logger) { m_wappers[ELogLevel::EN_INFO](message); }
+        if (m_logger) { m_wappers[lev](message); }
     }
 private:
 

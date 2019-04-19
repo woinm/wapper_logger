@@ -1,0 +1,4 @@
+#ifndef STREAMLOGGER_HPP
+#define STREAMLOGGER_HPP
+
+#endif // STREAMLOGGER_HPP

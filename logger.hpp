@@ -5,13 +5,13 @@
 *   http://vilipetek.com/2014/04/17/thread-safe-simple-logger-in-c11/
 */
 
-#ifndef WAPPERLOGGER_H
-#define WAPPERLOGGER_H
+#ifndef WRAPPERLOGGER_H
+#define WRAPPERLOGGER_H
 
 #include <sstream>
 
 namespace utils {
-namespace wapper {
+namespace wrapper {
 namespace log {
 
 using namespace std::placeholders;
@@ -147,7 +147,7 @@ private:
 typedef std::shared_ptr<LoggerBase> LoggerBasePtr;
 
 } // End log
-} // End wapper
+} // End wrapper
 } // End utils
 
-#endif // WAPPERLOGGER_H
+#endif // WRAPPERLOGGER_H

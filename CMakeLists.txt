@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(wapper_logger)
+project(wrapper_logger)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -16,6 +16,7 @@ endif()
 message(STATUS "${PROJECT_NAME} cmake_cxx_flags: ${CMAKE_CXX_FLAGS}")
 
 include_directories(.)
+include_directories(example)
 include_directories(/usr/include)
 include_directories(/usr/local/include)
 
@@ -23,10 +24,8 @@ link_directories(/usr/lib)
 link_directories(/usr/lib64)
 link_directories(/usr/local/lib)
 
-include_directories(extend_hpp)
-
 add_executable(${PROJECT_NAME} "example/main.cpp")
 
-set(WAPPER_LOGGER_DEPENDS log4cxx)
+set(WRAPPER_LOGGER_DEPENDS log4cxx)
 
-target_link_libraries(${PROJECT_NAME} ${WAPPER_LOGGER_DEPENDS})
+target_link_libraries(${PROJECT_NAME} ${WRAPPER_LOGGER_DEPENDS})

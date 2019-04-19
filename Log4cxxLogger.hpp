@@ -5,7 +5,7 @@
 #include <log4cxx/logger.h>
 #include <logger.hpp>
 
-namespace utils { namespace wapper { namespace log {
+namespace utils { namespace wrapper { namespace log {
 
 /** ==========回调函数========= */
 /**
@@ -29,25 +29,25 @@ typedef void ((log4cxx::Logger::*TForcedLogPtr)(const log4cxx::LevelPtr&, const 
 typedef std::function<void(const log4cxx::LevelPtr&, const std::string&, const log4cxx::spi::LocationInfo&)> ForcedLogCB;
 
 /**
- * @brief WapperFunc forcedlog 包装函数类型
+ * @brief WrapperFunc forcedlog 包装函数类型
  */
-typedef std::function<void (const std::string &)> LogWapperCB;
+typedef std::function<void (const std::string &)> LogWrapperCB;
 
 #define LOG_LEVEL_CHECK(level) if(level < 0 || level >= ELogLevel::EN_OFF) return;
 
 #define BIND_ENABLED(ptr) (IsEnabledCB)(std::bind(ptr, m_logger))
 #define BIND_LEVEL(ptr) (LogLevelCB)(std::bind(ptr))
 #define BIND_FORCEDLOG() (ForcedLogCB)(std::bind((TForcedLogPtr)(&log4cxx::Logger::forcedLog), m_logger, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))
-#define BIND_WAPPER(wapperptr, enabledptr, leveptr) std::bind(wapperptr, BIND_ENABLED(enabledptr), BIND_LEVEL(leveptr), BIND_FORCEDLOG(), std::placeholders::_1)
+#define BIND_WRAPPER(wrapperptr, enabledptr, leveptr) std::bind(wrapperptr, BIND_ENABLED(enabledptr), BIND_LEVEL(leveptr), BIND_FORCEDLOG(), std::placeholders::_1)
 
 /**
- * @brief log_wapper  log4cxx forcedlog回调函数
+ * @brief log_wrapper  log4cxx forcedlog回调函数
  * @param is_enabled  log4cxx::Logger::isxxxEnabled回调函数
  * @param level       回调函数，获取对应等级的日志指针
  * @param forcedlog   日志接口
  * @param message     日志内容
  */
-void log_wapper(IsEnabledCB is_enabled, LogLevelCB level, ForcedLogCB forcedlog, const std::string &message)
+void log_wrapper(IsEnabledCB is_enabled, LogLevelCB level, ForcedLogCB forcedlog, const std::string &message)
 {
     if(is_enabled())
     {
@@ -58,7 +58,7 @@ void log_wapper(IsEnabledCB is_enabled, LogLevelCB level, ForcedLogCB forcedlog,
 /**
  * @brief The CLog4cxxLogger class log4cxx 日志包装类
  */
-class CWapperLog4cxx : public LoggerBase
+class CWrapperLog4cxx : public LoggerBase
 {
 
 public:
@@ -67,15 +67,15 @@ public:
      * @param loglevel
      * @param log4
      */
-    CWapperLog4cxx(ELogLevel loglevel, log4cxx::LoggerPtr log4) : LoggerBase(loglevel), m_logger(log4)
+    CWrapperLog4cxx(ELogLevel loglevel, log4cxx::LoggerPtr log4) : LoggerBase(loglevel), m_logger(log4)
     {
         // 根据日志等级绑定接口
-        m_wappers[ELogLevel::EN_TRACE]  = BIND_WAPPER(&log_wapper, &log4cxx::Logger::isTraceEnabled, &log4cxx::Level::getTrace);
-        m_wappers[ELogLevel::EN_DEBUG]  = BIND_WAPPER(&log_wapper, &log4cxx::Logger::isDebugEnabled, &log4cxx::Level::getDebug);
-        m_wappers[ELogLevel::EN_INFO]   = BIND_WAPPER(&log_wapper, &log4cxx::Logger::isInfoEnabled, &log4cxx::Level::getInfo);
-        m_wappers[ELogLevel::EN_WARNING]= BIND_WAPPER(&log_wapper, &log4cxx::Logger::isWarnEnabled, &log4cxx::Level::getWarn);
-        m_wappers[ELogLevel::EN_ERROR]  = BIND_WAPPER(&log_wapper, &log4cxx::Logger::isErrorEnabled, &log4cxx::Level::getError);
-        m_wappers[ELogLevel::EN_FATAL]  = BIND_WAPPER(&log_wapper, &log4cxx::Logger::isFatalEnabled, &log4cxx::Level::getFatal);
+        m_wrappers[ELogLevel::EN_TRACE]  = BIND_WRAPPER(&log_wrapper, &log4cxx::Logger::isTraceEnabled, &log4cxx::Level::getTrace);
+        m_wrappers[ELogLevel::EN_DEBUG]  = BIND_WRAPPER(&log_wrapper, &log4cxx::Logger::isDebugEnabled, &log4cxx::Level::getDebug);
+        m_wrappers[ELogLevel::EN_INFO]   = BIND_WRAPPER(&log_wrapper, &log4cxx::Logger::isInfoEnabled, &log4cxx::Level::getInfo);
+        m_wrappers[ELogLevel::EN_WARNING]= BIND_WRAPPER(&log_wrapper, &log4cxx::Logger::isWarnEnabled, &log4cxx::Level::getWarn);
+        m_wrappers[ELogLevel::EN_ERROR]  = BIND_WRAPPER(&log_wrapper, &log4cxx::Logger::isErrorEnabled, &log4cxx::Level::getError);
+        m_wrappers[ELogLevel::EN_FATAL]  = BIND_WRAPPER(&log_wrapper, &log4cxx::Logger::isFatalEnabled, &log4cxx::Level::getFatal);
     }
 
     /**
@@ -86,7 +86,10 @@ public:
     virtual void log(ELogLevel lev, const std::string &message)
     {
         LOG_LEVEL_CHECK(lev)
-        if (m_logger) { m_wappers[lev](message); }
+        if (m_logger)
+        {
+            m_wrappers[lev](message);
+        }
     }
 private:
 
@@ -94,9 +97,9 @@ private:
      * @brief m_logger
      */
     log4cxx::LoggerPtr m_logger;
-    LogWapperCB m_wappers[ELogLevel::EN_OFF];
+    LogWrapperCB m_wrappers[ELogLevel::EN_OFF];
 };
-typedef std::shared_ptr<CWapperLog4cxx> CWapperLog4cxxPtr;
+typedef std::shared_ptr<CWrapperLog4cxx> CWrapperLog4cxxPtr;
 
 }
 }
